@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.3 — unreleased
+## 1.3-dev1 — test build, 2026-10-17
 
 - Resolve the private renderer's function and variable exports directly,
   with complete name/table bounds checks and explicit export kinds. Invalid

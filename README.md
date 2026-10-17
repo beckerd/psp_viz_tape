@@ -38,7 +38,8 @@ this project is not for you.
 
 ## Install
 
-1. Unzip the test package `viz_tape-v1.3-dev1.zip` (build it with `make release`).
+1. Download and unzip [viz_tape-v1.3-dev1.zip](https://github.com/beckerd/psp_viz_tape/releases/download/v1.3-dev1/viz_tape-v1.3-dev1.zip)
+   from the [1.3 test release](https://github.com/beckerd/psp_viz_tape/releases/tag/v1.3-dev1).
 2. Connect your PSP to your computer in USB mode.
 3. Copy the `seplugins` folder from the ZIP onto the root of the memory card
    or PSP Go internal storage.
