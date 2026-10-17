@@ -1,5 +1,5 @@
 TARGET = viz_tape
-OBJS = plugin.o profile.o safety.o guard.o icon.o icon_build.o renderer_payload.o paths.o
+OBJS = plugin.o profile.o safety.o guard.o icon.o icon_build.o renderer_payload.o paths.o module_exports.o
 BUILD_PRX = 1
 PRX_EXPORTS = exports.exp
 USE_KERNEL_LIBC = 1
@@ -12,7 +12,7 @@ LIBS = -lpspsystemctrl_kernel -lpspusb_driver
 PSPSDK = $(shell psp-config --pspsdk-path)
 include $(PSPSDK)/lib/build.mak
 
-plugin.o: runtime.h profile.h safety.h icon.h renderer_payload.h module_loader.h paths.h
+plugin.o: runtime.h profile.h safety.h icon.h renderer_payload.h module_loader.h paths.h module_exports.h
 renderer_payload.o: renderer_payload.S viz_tape_render.prx build/renderer_buffer.h
 	$(CC) $(CFLAGS) -c renderer_payload.S -o $@
 
@@ -29,3 +29,4 @@ safety.o: safety.h paths.h
 guard.o: safety.h paths.h
 profile.o: profile.h safety.h
 paths.o: paths.h
+module_exports.o: module_exports.h safety.h paths.h

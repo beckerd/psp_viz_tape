@@ -45,7 +45,9 @@ host-check:
 	build/compat_test
 	cc -std=c99 -O2 -Wall -Wextra -Werror -g -fsanitize=address,undefined -Itests/psp_stubs guard.c paths.c tests/guard_test.c -o build/guard_test
 	build/guard_test
-	cc -std=c99 -O2 -Wall -Wextra -Werror -g -fsanitize=address,undefined -Itests/psp_stubs safety.c paths.c tests/plugin_test.c -o build/plugin_test
+	cc -std=c99 -O2 -Wall -Wextra -Werror -g -fsanitize=address,undefined -Itests/psp_stubs module_exports.c tests/module_exports_test.c -o build/module_exports_test
+	build/module_exports_test
+	cc -std=c99 -O2 -Wall -Wextra -Werror -g -fsanitize=address,undefined -Itests/psp_stubs safety.c paths.c module_exports.c tests/plugin_test.c -o build/plugin_test
 	build/plugin_test
 	python3 tests/renderer_buffer_test.py
 	python3 tests/icon_patch_test.py

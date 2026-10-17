@@ -14,9 +14,10 @@
 #include "icon.h"
 #include "renderer_payload.h"
 #include "module_loader.h"
+#include "module_exports.h"
 
-PSP_MODULE_INFO("viz_tape", PSP_MODULE_KERNEL, 1, 2);
-#define VIZ_TAPE_VERSION "1.2"
+PSP_MODULE_INFO("viz_tape", PSP_MODULE_KERNEL, 1, 3);
+#define VIZ_TAPE_VERSION "1.3-dev1"
 PSP_NO_CREATE_MAIN_THREAD();
 
 static STMOD_HANDLER previous_handler;
@@ -103,9 +104,10 @@ static void patch_visualizer(SceModule *module)
     }
     renderer = sceKernelFindModuleByName(TAPE_RENDERER_MODULE);
     paf = sceKernelFindModuleByName("scePaf_Module");
-    draw = sctrlHENFindFunction(TAPE_RENDERER_MODULE, TAPE_RENDERER_LIBRARY, 0xeab11153);
-    /* ARK's export lookup searches both function and variable exports. */
-    bridge_address = sctrlHENFindFunction(TAPE_RENDERER_MODULE, TAPE_RENDERER_LIBRARY, 0x99f748f8);
+    /* Resolve both private exports locally. No CFW fallback may bypass the
+     * table checks; PAF lookup below still uses the CFW's NID translation. */
+    draw = tape_find_export(renderer, TAPE_RENDERER_LIBRARY, 0xeab11153, 0);
+    bridge_address = tape_find_export(renderer, TAPE_RENDERER_LIBRARY, 0x99f748f8, 1);
     if (!renderer || !paf ||
         !tape_range_contains(renderer->text_addr, renderer->text_size, draw, 4) ||
         !module_contains(renderer, bridge_address, sizeof(TapeBridge))) {
@@ -290,7 +292,7 @@ int module_start(SceSize args, void *argp)
         report("Viz Tape " VIZ_TAPE_VERSION " SKIPPED: unsupported devkit=%08X model=%d\n", version, model);
         return 1;
     }
-    /* Enabled by its PLUGINS.TXT line alone, like any ARK plugin. */
+    /* Enabled by its plugin-list entry (PLUGINS.TXT on ARK, vsh.txt on PRO). */
     if (!tape_guard_begin()) {
         report("Viz Tape " VIZ_TAPE_VERSION " SKIPPED: the previous start did not finish cleanly "
                "(or boot-guard.txt could not be written). Hooks are off for this "
@@ -337,5 +339,5 @@ int module_start(SceSize args, void *argp)
     return 0;
 }
 
-/* ARK's chained handler can remain referenced by later plugins. */
+/* The chained start handler can remain referenced by later plugins. */
 int module_stop(SceSize args, void *argp) { (void)args; (void)argp; return -1; }

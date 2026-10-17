@@ -11,6 +11,8 @@ typedef struct {
     uintptr_t text_addr, segmentaddr[4];
     unsigned segmentsize[4];
     char modname[32];
+    void *ent_top;
+    unsigned ent_size;
 } SceModule;
 #define PSP_MODULE_KERNEL 0
 #define PSP_MODULE_INFO(...)

@@ -11,6 +11,10 @@ Version 1.2 enables PSP-1000, PSP-2000, PSP-3000, PSP Go and PSP Street/E1000
 on ARK-4 with matching 6.61 firmware modules. See [Tested on](#tested-on) for
 the hardware results and the remaining tests.
 
+This branch builds **1.3-dev1**, a PRO-C compatibility test with bounded local
+lookup of the renderer's exports. A fresh install passed on a PSP-1000 with
+ARK-4, and the test build has also been reported working on PRO-C hardware.
+
 This was written by Astra and Opus5.5 if you do not want code written by AI on your PSP
 this project is not for you.
 
@@ -34,15 +38,14 @@ this project is not for you.
 
 ## Install
 
-1. Download [viz_tape-v1.2.zip](https://github.com/beckerd/psp_viz_tape/releases/download/v1.2/viz_tape-v1.2.zip)
-   from the [1.2 release](https://github.com/beckerd/psp_viz_tape/releases/tag/v1.2)
-   and unzip it.
+1. Download and unzip [viz_tape-v1.3-dev1.zip](https://github.com/beckerd/psp_viz_tape/releases/download/v1.3-dev1/viz_tape-v1.3-dev1.zip)
+   from the [1.3 test release](https://github.com/beckerd/psp_viz_tape/releases/tag/v1.3-dev1).
 2. Connect your PSP to your computer in USB mode.
 3. Copy the `seplugins` folder from the ZIP onto the root of the memory card
    or PSP Go internal storage.
    If the card already has a `seplugins` (or `SEPLUGINS`) folder, let your
    computer merge them; nothing else in it is replaced.
-4. Open `seplugins/PLUGINS.TXT` on the card in a plain-text editor (create it
+4. **ARK-4:** open `seplugins/PLUGINS.TXT` in a plain-text editor (create it
    if it doesn't exist) and add this one line:
 
    ```
@@ -54,6 +57,15 @@ this project is not for you.
    ```
    vsh, ef0:/seplugins/viz_tape/viz_tape.prx, on
    ```
+
+   **PRO-C:** use `seplugins/vsh.txt` instead, with this line:
+
+   ```
+   ms0:/seplugins/viz_tape/viz_tape.prx 1
+   ```
+
+   For Go internal storage, change `ms0:` to `ef0:`. Use the format for your
+   CFW; `vsh.txt` does not use ARK's commas or `vsh,` prefix.
 
    Keep one Viz Tape entry. The plugin saves its icon, log and boot guard in
    `seplugins/viz_tape` on the same storage device as the installed PRX.
@@ -73,7 +85,15 @@ embedded in `viz_tape.prx`. The old `enabled.txt` is also no longer used.
 ## Tested on
 
 - PSP-1000 (32 MB), 6.61 ARK-4 as shown in System Information,
-  128 GB memory card, alongside xmb_gamecache.
+  128 GB memory card, alongside xmb_gamecache (public 1.2 and test 1.3-dev1).
+- PRO-C hardware: test `1.3-dev1` reported working.
+
+On 2026-10-17, a fresh `1.3-dev1` install generated its icon, started the
+renderer and patched the visualizer successfully. The user reported that it
+looked good; the startup log was clean, file integrity checks passed, and
+the boot guard cleared. PRO-C hardware success was subsequently confirmed.
+This change does not establish that public 1.2 fails on PRO-C. Full model
+coverage, extended playback and suspend/resume remain unverified for this build.
 
 ## If something goes wrong
 
@@ -82,7 +102,9 @@ embedded in `viz_tape.prx`. The old `enabled.txt` is also no longer used.
   next start skips the plugin once, so a fault can never become a boot loop.
   (Launching a game or entering USB mode within 15 seconds has the same
   harmless one-start effect.)
-- To disable it, change the Viz Tape line in PLUGINS.TXT to `off` over USB,
+- On PRO-C, disable its entry in `vsh.txt` by changing the final `1` to `0`,
+  or use the Recovery Menu's Plugins section, then restart.
+- On ARK, change the Viz Tape line in PLUGINS.TXT to `off` over USB,
   or hold **START** while powering on to bypass ARK plugins for one boot, or
   use ARK's **Recovery Menu** (hold R at power-on). See ARK's
   [recovery guide](https://github.com/PSP-Archive/ARK-4/wiki/Recovery).
@@ -130,14 +152,14 @@ Only `viz_tape.prx` is installed. `viz_tape_render.prx` is a build intermediate.
 
 `make host-check` runs the host tests (rendering, animation, mesh, frame cache,
 normal/expanded address checks, model-independent startup, both storage paths,
-relocated firmware signatures, embedded runtime loading, USB lifecycle, boot
+relocated firmware signatures, bounded export parsing, embedded runtime loading, USB lifecycle, boot
 guard and the on-PSP icon builder) under AddressSanitizer and UndefinedBehaviorSanitizer.
 `make profile-check` and `make icon-check` also verify the firmware signatures,
 but need private firmware captures that are not in this repository.
 
 ## How it works (short version)
 
-The kernel plugin registers an ARK module-start handler. When the Music
+The kernel plugin registers a CFW module-start handler. When the Music
 player's visualizer module loads, it verifies the module's exact layout —
 sizes, the final effect's 15-entry vtable, code signatures and import stubs —
 and only then replaces that effect's one draw pointer in user RAM with the
@@ -155,6 +177,11 @@ The kernel queries the real user-memory partition and passes its bounds to
 the renderer; checks neither assume 32 MB nor grant access to extra RAM based
 on a model number alone. Kernel patching and user-mode drawing remain
 separate at runtime, with one file and one plugin entry to install.
+
+The private renderer's function and variable exports are resolved directly
+from its module tables, with bounded names, counts and pointers. Invalid
+metadata leaves the stock visualizer selected. PAF functions still use the
+CFW's NID translation and the existing native-import checks.
 
 The user-mode renderer draws the cassette in software into a fixed 480×272
 buffer, run-length-merges it into rectangles and submits them through the
@@ -181,9 +208,9 @@ This software is provided **as is, without warranty of any kind**, and the
 author accepts no liability for any damage arising from its use — see
 sections 15 and 16 of the [LICENSE](LICENSE). Use it at your own risk.
 
-Just in case: an XMB freeze is recovered by holding the power switch off and
-disabling the plugin via ARK's Recovery Menu (hold R at power-on), by holding
-START at power-on, or by editing PLUGINS.TXT over USB.
+Just in case: after an XMB freeze, hold the power switch off and disable the
+plugin through your CFW's Recovery Menu or its plugin list over USB.
+ARK also supports holding START at power-on to bypass plugins for one boot.
 
 ## Credits & license
 

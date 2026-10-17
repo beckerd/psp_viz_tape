@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.3-dev1 — test build, 2026-10-17
+
+- Resolve the private renderer's function and variable exports directly,
+  with complete name/table bounds checks and explicit export kinds. Invalid
+  metadata cannot fall back to a CFW lookup that bypasses these checks.
+- Keep the existing renderer ownership/ABI checks and PAF NID translation.
+- Add regressions for malformed records, unterminated names, incomplete
+  tables, wrong-module pointers and absence of private-export fallback.
+- Provide `1.3-dev1` as a PRO-C/ARK test build, with `vsh.txt` instructions
+  for PRO-C.
+- Verify a fresh `1.3-dev1` install (`93b9c0a`) on PSP-1000/6.61 ARK-4 on
+  2026-10-17: icon generation, renderer startup, playback-state binding and
+  slot 7 patching succeeded, with a clean startup log and cleared boot guard.
+  The user reported good visuals; PRX and icon integrity checks passed.
+- Record subsequent confirmation that `1.3-dev1` works on PRO-C hardware.
+  Full model coverage, extended playback and suspend/resume remain unverified.
+
 ## 1.2 — 2026-10-17
 
 - Enable all retail PSP models: 1000, 2000, 3000, Go and Street/E1000. Version
