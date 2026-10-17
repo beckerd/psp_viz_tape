@@ -12,8 +12,8 @@ on ARK-4 with matching 6.61 firmware modules. See [Tested on](#tested-on) for
 the hardware results and the remaining tests.
 
 This branch builds **1.3-dev1**, a PRO-C compatibility test with bounded local
-lookup of the renderer's exports. Hardware validation of this build is pending
-on both PRO-C and ARK-4.
+lookup of the renderer's exports. A fresh install passed on a PSP-1000 with
+ARK-4; PRO-C hardware validation is still pending.
 
 This was written by Astra and Opus5.5 if you do not want code written by AI on your PSP
 this project is not for you.
@@ -84,9 +84,12 @@ embedded in `viz_tape.prx`. The old `enabled.txt` is also no longer used.
 ## Tested on
 
 - PSP-1000 (32 MB), 6.61 ARK-4 as shown in System Information,
-  128 GB memory card, alongside xmb_gamecache (public 1.2).
+  128 GB memory card, alongside xmb_gamecache (public 1.2 and test 1.3-dev1).
 
-The `1.3-dev1` test build still needs hardware validation on ARK-4 and PRO-C.
+On 2026-10-17, a fresh `1.3-dev1` install generated its icon, started the
+renderer and patched the visualizer successfully. The user reported that it
+looked good; the startup log was clean, file integrity checks passed, and
+the boot guard cleared. PRO-C hardware validation is still pending.
 This change does not establish that public 1.2 fails on PRO-C. Other PSP models,
 extended playback and suspend/resume also remain unverified for this build.
 

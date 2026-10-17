@@ -9,7 +9,12 @@
 - Add regressions for malformed records, unterminated names, incomplete
   tables, wrong-module pointers and absence of private-export fallback.
 - Provide `1.3-dev1` as a PRO-C/ARK test build, with `vsh.txt` instructions
-  for PRO-C. Hardware testing of this build is pending on both CFWs.
+  for PRO-C.
+- Verify a fresh `1.3-dev1` install (`93b9c0a`) on PSP-1000/6.61 ARK-4 on
+  2026-10-17: icon generation, renderer startup, playback-state binding and
+  slot 7 patching succeeded, with a clean startup log and cleared boot guard.
+  The user reported good visuals; PRX and icon integrity checks passed.
+  PRO-C, other models, extended playback and suspend/resume remain unverified.
 
 ## 1.2 — 2026-10-17
 
