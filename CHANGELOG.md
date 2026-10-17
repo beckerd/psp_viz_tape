@@ -14,7 +14,8 @@
   2026-10-17: icon generation, renderer startup, playback-state binding and
   slot 7 patching succeeded, with a clean startup log and cleared boot guard.
   The user reported good visuals; PRX and icon integrity checks passed.
-  PRO-C, other models, extended playback and suspend/resume remain unverified.
+- Record subsequent confirmation that `1.3-dev1` works on PRO-C hardware.
+  Full model coverage, extended playback and suspend/resume remain unverified.
 
 ## 1.2 — 2026-10-17
 
