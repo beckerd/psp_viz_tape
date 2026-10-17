@@ -7,13 +7,13 @@ I wanted the PSP's Music player to look like a tape deck, so this plugin
 turns its last visualizer into an animated cassette: the reels turn, the tape
 winds from one reel to the other, and after 15 minutes it flips to Side B.
 
-Version 1.2 enables PSP-1000, PSP-2000, PSP-3000, PSP Go and PSP Street/E1000
-on ARK-4 with matching 6.61 firmware modules. See [Tested on](#tested-on) for
-the hardware results and the remaining tests.
+Version 1.3 supports ARK-4 and PRO-C with matching 6.61 firmware modules.
+PSP-1000, PSP-2000, PSP-3000, PSP Go and PSP Street/E1000 are enabled.
+See [Tested on](#tested-on) for the hardware results and the remaining tests.
 
-This branch builds **1.3-dev1**, a PRO-C compatibility test with bounded local
-lookup of the renderer's exports. A fresh install passed on a PSP-1000 with
-ARK-4, and the test build has also been reported working on PRO-C hardware.
+The PRO-C compatibility changes passed hardware testing on PSP-1000 with
+6.61 ARK-4 and 6.61 PRO-C Infinity. Version 1.3 keeps the behavior of the
+tested `1.3-dev1` build and updates the version label.
 
 This was written by Astra and Opus5.5 if you do not want code written by AI on your PSP
 this project is not for you.
@@ -38,40 +38,40 @@ this project is not for you.
 
 ## Install
 
-1. Download and unzip [viz_tape-v1.3-dev1.zip](https://github.com/beckerd/psp_viz_tape/releases/download/v1.3-dev1/viz_tape-v1.3-dev1.zip)
-   from the [1.3 test release](https://github.com/beckerd/psp_viz_tape/releases/tag/v1.3-dev1).
-2. Connect your PSP to your computer in USB mode.
-3. Copy the `seplugins` folder from the ZIP onto the root of the memory card
-   or PSP Go internal storage.
-   If the card already has a `seplugins` (or `SEPLUGINS`) folder, let your
-   computer merge them; nothing else in it is replaced.
-4. **ARK-4:** open `seplugins/PLUGINS.TXT` in a plain-text editor (create it
-   if it doesn't exist) and add this one line:
+1. Download and unzip [viz_tape-v1.3.zip](https://github.com/beckerd/psp_viz_tape/releases/download/v1.3/viz_tape-v1.3.zip)
+   from the [1.3 release](https://github.com/beckerd/psp_viz_tape/releases/tag/v1.3).
+2. Connect the PSP in USB mode and copy the ZIP's `seplugins` folder to the
+   root of the memory card. Merge existing folders and replace `viz_tape.prx`
+   if updating. Keep other plugins.
+
+### ARK-4/5
+
+3. Add this one line to **`seplugins/PLUGINS.TXT`** (create the file if needed):
 
    ```
    vsh, ms0:/seplugins/viz_tape/viz_tape.prx, on
    ```
 
-   **PSP Go internal storage:** use this line instead:
+   For PSP Go internal storage, install there and use `ef0:` instead of `ms0:`.
 
-   ```
-   vsh, ef0:/seplugins/viz_tape/viz_tape.prx, on
-   ```
+### PRO-C
 
-   **PRO-C:** use `seplugins/vsh.txt` instead, with this line:
+3. Add this one line to **`seplugins/vsh.txt`** (create the file if needed):
 
    ```
    ms0:/seplugins/viz_tape/viz_tape.prx 1
    ```
 
-   For Go internal storage, change `ms0:` to `ef0:`. Use the format for your
-   CFW; `vsh.txt` does not use ARK's commas or `vsh,` prefix.
+   For PSP Go internal storage, install there and use `ef0:` instead of `ms0:`.
 
-   Keep one Viz Tape entry. The plugin saves its icon, log and boot guard in
-   `seplugins/viz_tape` on the same storage device as the installed PRX.
+Use only the entry for your CFW, and keep one Viz Tape entry. Edit the plugin
+list in plain text, keep other plugins' lines and save the file.
 
-5. Eject the card, exit USB mode and restart your PSP.
-6. Play a song in the Music player and switch to the last visualizer.
+4. Eject, exit USB mode and fully restart the PSP. Play a song in the Music
+   player and select the **last visualizer**.
+
+The plugin saves its icon, log and boot guard in `seplugins/viz_tape` on the
+same storage device as the installed PRX.
 
 That's it. On the first start the plugin creates the cassette icon during
 startup, ready for the first Music session. [INSTALL.txt](INSTALL.txt)
@@ -86,14 +86,15 @@ embedded in `viz_tape.prx`. The old `enabled.txt` is also no longer used.
 
 - PSP-1000 (32 MB), 6.61 ARK-4 as shown in System Information,
   128 GB memory card, alongside xmb_gamecache (public 1.2 and test 1.3-dev1).
-- PRO-C hardware: test `1.3-dev1` reported working.
+- PSP-1000, 6.61 PRO-C Infinity: test `1.3-dev1` loaded successfully,
+  displayed the cassette and animated the reels during music playback.
 
 On 2026-10-17, a fresh `1.3-dev1` install generated its icon, started the
 renderer and patched the visualizer successfully. The user reported that it
 looked good; the startup log was clean, file integrity checks passed, and
 the boot guard cleared. PRO-C hardware success was subsequently confirmed.
-This change does not establish that public 1.2 fails on PRO-C. Full model
-coverage, extended playback and suspend/resume remain unverified for this build.
+This change does not establish that public 1.2 fails on PRO-C. ARK-5, full
+model coverage, extended playback and suspend/resume remain unverified for this build.
 
 ## If something goes wrong
 
