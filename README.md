@@ -89,13 +89,6 @@ embedded in `viz_tape.prx`. The old `enabled.txt` is also no longer used.
 - PSP-1000, 6.61 PRO-C Infinity: test `1.3-dev1` loaded successfully,
   displayed the cassette and animated the reels during music playback.
 
-On 2026-10-17, a fresh `1.3-dev1` install generated its icon, started the
-renderer and patched the visualizer successfully. The user reported that it
-looked good; the startup log was clean, file integrity checks passed, and
-the boot guard cleared. PRO-C hardware success was subsequently confirmed.
-This change does not establish that public 1.2 fails on PRO-C. ARK-5, full
-model coverage, extended playback and suspend/resume remain unverified for this build.
-
 ## If something goes wrong
 
 - **Boot guard.** For the first 15 seconds after each XMB start, the plugin
