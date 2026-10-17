@@ -24,7 +24,7 @@ static unsigned char load_buffer[256] __attribute__((aligned(64)));
 static int allocation_result, allocation_calls, frees, buffer_unavailable;
 static int worker_running, load_result, module_start_result, module_status;
 static int load_calls, module_start_calls, unload_calls, runtime_present;
-static int viz_present, profile_checks, start_auto_unloads, start_callback;
+static int viz_present, profile_checks, profile_result, start_auto_unloads, start_callback;
 static SceModule runtime_module;
 static SceModule visualizer = {
     .nsegment = 2, .text_addr = 0x08900000, .text_size = TAPE_TEXT_SIZE,
@@ -147,7 +147,12 @@ int sceKernelUnloadModule(SceUID uid)
     return 0;
 }
 uintptr_t sctrlHENFindFunction(const char *module, const char *library, unsigned nid)
-{ (void)module; (void)library; (void)nid; return 0; }
+{
+    /* Private exports must never use a CFW lookup, including fallback after
+     * missing/malformed metadata. PAF still needs CFW NID translation. */
+    assert(strcmp(module, TAPE_RENDERER_MODULE));
+    (void)library; (void)nid; return 0;
+}
 STMOD_HANDLER sctrlHENSetStartModuleHandler(STMOD_HANDLER handler)
 {
     STMOD_HANDLER old = installed;
@@ -214,7 +219,7 @@ int tape_icon_redirect(void *text, size_t size, uint32_t base)
     return 1;
 }
 int tape_profile_matches(const void *text, size_t size, uint32_t base)
-{ (void)text; (void)size; (void)base; ++profile_checks; return 0; }
+{ (void)text; (void)size; (void)base; ++profile_checks; return profile_result; }
 uint32_t tape_play_state_address(const void *text, size_t size, uint32_t base)
 { (void)text; (void)size; (void)base; return 0; }
 
@@ -233,7 +238,8 @@ static void reset(void)
     log_truncates = log_syncs = 0;
     renderer_started = worker_running = module_status = 0;
     load_calls = module_start_calls = unload_calls = runtime_present = 0;
-    viz_present = profile_checks = start_auto_unloads = start_callback = 0;
+    viz_present = profile_checks = profile_result = start_auto_unloads = start_callback = 0;
+    memset(&runtime_module, 0, sizeof runtime_module);
     load_result = module_start_result = 12;
     allocation_result = 20;
     allocation_calls = frees = buffer_unavailable = 0;
@@ -255,6 +261,17 @@ static void run_worker(void)
 int main(void)
 {
     unsigned i;
+    /* The real local parser rejects absent/corrupt export metadata without
+     * falling back to a firmware lookup or modifying the visualizer. */
+    for (i = 0; i < 2; ++i) {
+        reset(); renderer_started = runtime_present = profile_result = 1;
+        if (i) {
+            runtime_module.ent_top = (void *)0x88000000;
+            runtime_module.ent_size = sizeof(SceLibraryEntryTable);
+        }
+        patch_visualizer(&visualizer);
+        assert(event == 3 && !patched_base && !interrupts && profile_checks == 1);
+    }
     /* Model is diagnostic, never an activation gate. Exercise every retail
      * model value and both the real and ARK-compatibility version values. */
     for (i = 0; i <= 10; ++i) {

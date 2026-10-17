@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.3 — unreleased
+
+- Resolve the private renderer's function and variable exports directly,
+  with complete name/table bounds checks and explicit export kinds. Invalid
+  metadata cannot fall back to a CFW lookup that bypasses these checks.
+- Keep the existing renderer ownership/ABI checks and PAF NID translation.
+- Add regressions for malformed records, unterminated names, incomplete
+  tables, wrong-module pointers and absence of private-export fallback.
+- Provide `1.3-dev1` as a PRO-C/ARK test build, with `vsh.txt` instructions
+  for PRO-C. Hardware testing of this build is pending on both CFWs.
+
 ## 1.2 — 2026-10-17
 
 - Enable all retail PSP models: 1000, 2000, 3000, Go and Street/E1000. Version

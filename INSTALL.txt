@@ -1,9 +1,10 @@
-VIZ TAPE 1.2 — HOW TO INSTALL
-An animated cassette for the PSP Music player (6.61 ARK-4)
+VIZ TAPE 1.3-dev1 — COMPATIBILITY TEST BUILD
+An animated cassette for the PSP Music player (6.61 ARK-4 / PRO-C test)
 Models enabled: PSP-1000, PSP-2000, PSP-3000, PSP Go and PSP Street/E1000.
+This build still needs hardware testing on both ARK-4 and PRO-C.
 
 WHAT YOU NEED
-  - Your PSP with 6.61 ARK-4, and a USB cable (or a memory card reader).
+  - Your PSP with 6.61 ARK-4 or PRO-C, and a USB cable (or a card reader).
   - This ZIP, unzipped. It contains a "seplugins" folder.
 
 INSTALL
@@ -14,9 +15,11 @@ INSTALL
      If a seplugins or SEPLUGINS folder already exists, merge the folders.
      When updating, replace viz_tape.prx with the new copy; keep other plugins.
 
-  3. Open seplugins/PLUGINS.TXT on that storage device with a plain-text editor
+  3. Open the plugin list on that storage device with a plain-text editor
      (TextEdit on a Mac: Format > Make Plain Text; Notepad on Windows).
-     If there is no PLUGINS.TXT, create one. Add this one line at the end:
+     Create the file if needed. Use the format for your CFW below.
+
+     ARK-4: use seplugins/PLUGINS.TXT and this line:
 
        vsh, ms0:/seplugins/viz_tape/viz_tape.prx, on
 
@@ -24,11 +27,19 @@ INSTALL
 
        vsh, ef0:/seplugins/viz_tape/viz_tape.prx, on
 
+     PRO-C: use seplugins/vsh.txt and this line:
+
+       ms0:/seplugins/viz_tape/viz_tape.prx 1
+
+     For PSP Go internal storage, use this line INSTEAD:
+
+       ef0:/seplugins/viz_tape/viz_tape.prx 1
+
      Keep one Viz Tape entry. Generated files stay in seplugins/viz_tape
      on the same storage device as the PRX.
 
      Keep other plugins' lines. When updating, replace the old Viz Tape
-     entries with the one line above. Save it as PLUGINS.TXT.
+     entries with the one line for your CFW. Save the plugin list.
 
   4. Eject the memory card on your computer, exit USB mode and restart the PSP.
 
@@ -39,47 +50,41 @@ INSTALL
   session. Nothing else to do.
 
 UPDATING FROM AN OLDER VERSION
-  Replace the two old Viz Tape lines in PLUGINS.TXT with the single line
-  above. Copy the new seplugins folder over the old one, then restart the
+  Keep one Viz Tape line in your CFW's plugin list, using the format above.
+  Copy the new seplugins folder over the old one, then restart the
   PSP before opening Music. Delete the old viz_tape_render.prx file; the
   renderer is now included inside viz_tape.prx.
   An enabled.txt from version 1.0 is no longer needed; you can delete it.
 
 TURN OFF OR UNINSTALL
-  Turn off:  change "on" to "off" on the Viz Tape line, then restart.
+  Turn off:  ARK: change "on" to "off" on the Viz Tape line.
+             PRO-C: change the final "1" to "0". Then restart.
   Uninstall: delete that line and the seplugins/viz_tape folder, then restart
              before opening Music again.
 
 IF THE PSP WON'T START PROPERLY
   Viz Tape skips itself for one start if the previous start crashed, so it
-  cannot get stuck in a loop. If you still need to, hold START while turning
-  the PSP on to start without any plugins, then turn Viz Tape off as above.
+  cannot get stuck in a loop. Disable Viz Tape through your CFW's Recovery
+  Menu or its plugin list over USB. On ARK, holding START while turning the
+  PSP on also skips plugins for one boot.
   ARK's guide: https://github.com/PSP-Archive/ARK-4/wiki/Recovery
 
 IF THE CASSETTE DOESN'T SHOW UP
-  Check that the single line is in PLUGINS.TXT exactly as above,
+  Check that the single line is in your CFW's plugin list exactly as above,
   and that seplugins/viz_tape has viz_tape.prx.
   The plugin writes notes to seplugins/viz_tape/status.txt.
   After a failed startup, the recovery boot preserves those notes and adds
-  its skip reason. This build identifies itself as 1.2 and records
+  its skip reason. This build identifies itself as 1.3-dev1 and records
   the model ID, storage device and user-memory partition.
   A RENDERER load/start failure leaves the stock visualizer selected.
 
 TESTING STATUS
-  Corrected build 1.2-dev2 passed a PSP-1000 restart and Music-hook retest
-  on 2026-10-17, running 6.61 ARK-4 per System Information. The renderer
-  started, the icon and playback-state binding succeeded, slot 7 was patched,
-  and the boot guard cleared. Host tests and PSP build checks also pass.
-  ARK reports a 6.60 compatibility value to plugins, so devkit=06060010 in
-  status.txt does not identify the installed firmware as 6.60.
-  The newer 1.2-dev3 removes the model restriction and adds PSP Go storage
-  and memory-partition handling. On the same date, its PSP-1000 device log
-  confirmed startup, correct memory bounds, renderer and Music-hook success.
-  The installed PRX and generated icon passed integrity checks; the boot
-  guard was absent. Host tests and PSP build checks pass.
-  The final 1.2 release changes only the diagnostic version label from
-  that tested build; there are no further runtime behavior changes.
-  Hardware tests on 2000/3000/Go/Street, plus extended playback and
-  suspend/resume tests, remain outstanding.
+  Public 1.2 was validated on a PSP-1000 with 6.61 ARK-4. The new 1.3-dev1
+  changes private export lookup and still needs hardware tests on both
+  ARK-4 and PRO-C, including restart, Music, seeking and suspend/resume.
+  Other PSP models also need hardware tests. This change does not establish
+  that public 1.2 fails on PRO-C.
+  ARK may report devkit=06060010 on 6.61; use System Information for the
+  installed firmware version. Share status.txt after testing.
 
 More details: https://github.com/beckerd/psp_viz_tape

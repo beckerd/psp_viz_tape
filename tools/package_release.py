@@ -5,7 +5,7 @@ from pathlib import Path
 from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED
 
 root = Path(__file__).resolve().parents[1]
-version = '1.2'
+version = '1.3-dev1'
 card = 'seplugins/viz_tape/'
 files = {
     card + 'viz_tape.prx': 'viz_tape.prx',
